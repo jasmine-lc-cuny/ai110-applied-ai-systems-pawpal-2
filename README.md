@@ -17,6 +17,40 @@ assets/pawpal-ai-infographic.png
 
 ![PawPal AI cartoon infographic](assets/pawpal-ai-infographic.png)
 
+## Original Module 2 Snapshot
+
+The assignment asks for an extension of a previous Module 1-3 project, so this section preserves the original PawPal+ behavior that the final project builds on.
+
+```text
+PawPal+ schedule for Jordan
+================================
+📅 Today's Schedule
+  07:30 - Luna: Breakfast (10 min, high, daily, 2026-07-01, ⏳ open)
+  08:00 - Mochi: Morning walk (30 min, high, daily, 2026-07-01, ⏳ open)
+  08:00 - Luna: Brush coat (15 min, medium, once, 2026-07-01, ⏳ open)
+  12:00 - Mochi: Heartworm medication (5 min, high, once, 2026-07-01, ⏳ open)
+
+High Priority First
+  07:30 - Luna: Breakfast (10 min, high, daily, 2026-07-01, ⏳ open)
+  08:00 - Mochi: Morning walk (30 min, high, daily, 2026-07-01, ⏳ open)
+  12:00 - Mochi: Heartworm medication (5 min, high, once, 2026-07-01, ⏳ open)
+  08:00 - Luna: Brush coat (15 min, medium, once, 2026-07-01, ⏳ open)
+
+🚨 Next Urgent Task
+  07:30 - Luna: Breakfast (10 min, high, daily, 2026-07-01, ⏳ open)
+
+⭐ Today's Top 3 Priorities
+  07:30 - Luna: Breakfast (10 min, high, daily, 2026-07-01, ⏳ open)
+  08:00 - Mochi: Morning walk (30 min, high, daily, 2026-07-01, ⏳ open)
+  12:00 - Mochi: Heartworm medication (5 min, high, once, 2026-07-01, ⏳ open)
+
+⚠️ Conflict Warnings
+  Conflict on 2026-07-01 at 08:00: Mochi: Morning walk, Luna: Brush coat
+
+🔁 Recurring Task Created
+  08:00 - Mochi: Morning walk (30 min, high, daily, 2026-07-02, ⏳ open)
+```
+
 ## Summary
 
 PawPal AI helps a pet owner turn a care goal into a safer daily routine. For example, if the owner says a dog needs a walk and medication reminder, the system retrieves exercise and medication guidance, suggests concrete tasks, flags overlaps, and explains the plan.
