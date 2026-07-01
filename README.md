@@ -69,24 +69,26 @@ Sample output:
 ```text
 PawPal+ schedule for Jordan
 ================================
-Today's Schedule
-  07:30 - Luna: Breakfast (10 min, high, daily, 2026-07-01, open)
-  08:00 - Mochi: Morning walk (30 min, high, daily, 2026-07-01, open)
-  08:00 - Luna: Brush coat (15 min, medium, once, 2026-07-01, open)
-  12:00 - Mochi: Heartworm medication (5 min, high, once, 2026-07-01, open)
+📅 Today's Schedule
+  07:30 - Luna: Breakfast (10 min, high, daily, 2026-07-01, ⏳ open)
+  08:00 - Mochi: Morning walk (30 min, high, daily, 2026-07-01, ⏳ open)
+  08:00 - Luna: Brush coat (15 min, medium, once, 2026-07-01, ⏳ open)
+  12:00 - Mochi: Heartworm medication (5 min, high, once, 2026-07-01, ⏳ open)
 
 PawPal AI Care Plan
 ===================
   Step: Matched request to medication guidance for dog care.
   Step: Matched request to exercise guidance for dog care.
   Step: Detected schedule overlap after adding suggested tasks.
-  Suggested: 12:00 - Mochi: AI medication check (5 min, high, daily, 2026-07-01, open)
-  Suggested: 08:00 - Mochi: AI suggested walk (30 min, high, daily, 2026-07-01, open)
+  Suggested: 12:00 - Mochi: AI medication check (5 min, high, daily, 2026-07-01, ⏳ open)
+  Suggested: 08:00 - Mochi: AI suggested walk (30 min, high, daily, 2026-07-01, ⏳ open)
   Brief: Care coach: For Mochi, prioritize AI medication check because Medication tasks should be high priority and easy to notice in the daily schedule.
   Confidence: 0.95
   Guardrail: Do not invent medication names or dosages; only remind for owner-provided care tasks.
   Applied suggested tasks: 2
 ```
+
+The CLI uses emoji formatting in UTF-8 terminals such as Codespaces and falls back to plain text in terminals that cannot print emoji safely.
 
 ## Run The Streamlit App
 

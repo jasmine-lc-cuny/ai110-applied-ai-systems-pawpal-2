@@ -32,6 +32,7 @@ def test_task_completion_marks_status():
     task.mark_complete()
 
     assert task.completed is True
+    assert "✅ done" in task.summary(use_emoji=True)
 
 
 def test_adding_task_increases_pet_task_count():

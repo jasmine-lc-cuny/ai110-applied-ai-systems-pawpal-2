@@ -1,7 +1,16 @@
+import sys
 from datetime import date
 
 from pawpal_ai import apply_suggested_tasks, generate_care_plan
 from pawpal_system import Owner, Pet, Scheduler, Task
+
+
+USE_EMOJI = "UTF" in (sys.stdout.encoding or "").upper()
+
+
+def label(emoji_text, plain_text):
+    """Use cute labels where the terminal supports them, with safe fallback."""
+    return emoji_text if USE_EMOJI else plain_text
 
 
 def build_demo_owner():
@@ -31,7 +40,7 @@ def print_schedule(title, task_pairs):
         return
 
     for pet, task in task_pairs:
-        print(f"  {task.summary(pet.name)}")
+        print(f"  {task.summary(pet.name, use_emoji=USE_EMOJI)}")
 
 
 def main():
@@ -42,7 +51,7 @@ def main():
     print(f"PawPal+ schedule for {owner.name}")
     print("=" * 32)
 
-    print_schedule("Today's Schedule", scheduler.todays_schedule())
+    print_schedule(label("📅 Today's Schedule", "Today's Schedule"), scheduler.todays_schedule())
     print()
 
     print_schedule(
@@ -53,20 +62,20 @@ def main():
 
     urgent_task = scheduler.get_next_urgent_task()
     if urgent_task is None:
-        print("Next Urgent Task")
+        print(label("🚨 Next Urgent Task", "Next Urgent Task"))
         print("  No tasks found.")
     else:
         pet, task = urgent_task
-        print("Next Urgent Task")
-        print(f"  {task.summary(pet.name)}")
+        print(label("🚨 Next Urgent Task", "Next Urgent Task"))
+        print(f"  {task.summary(pet.name, use_emoji=USE_EMOJI)}")
     print()
 
     top_priority_tasks = scheduler.get_top_priority_tasks(limit=3)
-    print_schedule("Today's Top 3 Priorities", top_priority_tasks)
+    print_schedule(label("⭐ Today's Top 3 Priorities", "Today's Top 3 Priorities"), top_priority_tasks)
     print()
 
     conflicts = scheduler.detect_conflicts(scheduler.todays_schedule())
-    print("Conflict Warnings")
+    print(label("⚠️ Conflict Warnings", "Conflict Warnings"))
     if conflicts:
         for warning in conflicts:
             print(f"  {warning}")
@@ -80,7 +89,7 @@ def main():
         for pet, task in owner.all_tasks()
         if pet.name == "Mochi" and task.title == "Morning walk" and task.due_date > date.today()
     ]
-    print_schedule("Recurring Task Created", next_walks)
+    print_schedule(label("🔁 Recurring Task Created", "Recurring Task Created"), next_walks)
 
     print()
     print("PawPal AI Care Plan")
@@ -93,7 +102,7 @@ def main():
     for step in plan.reasoning_steps:
         print(f"  Step: {step}")
     for task in plan.suggested_tasks:
-        print(f"  Suggested: {task.summary('Mochi')}")
+        print(f"  Suggested: {task.summary('Mochi', use_emoji=USE_EMOJI)}")
     print(f"  Brief: {plan.specialized_brief}")
     print(f"  Confidence: {plan.confidence:.2f}")
     if plan.guardrails:

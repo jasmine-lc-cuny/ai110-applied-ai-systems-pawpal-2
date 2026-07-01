@@ -43,10 +43,13 @@ class Task:
             due_date=next_date,
         )
 
-    def summary(self, pet_name: str | None = None) -> str:
+    def summary(self, pet_name: str | None = None, use_emoji: bool = False) -> str:
         """Return a readable one-line description for CLI output."""
         pet_prefix = f"{pet_name}: " if pet_name else ""
-        status = "done" if self.completed else "open"
+        if use_emoji:
+            status = "✅ done" if self.completed else "⏳ open"
+        else:
+            status = "done" if self.completed else "open"
         return (
             f"{self.time} - {pet_prefix}{self.title} "
             f"({self.duration_minutes} min, {self.priority}, "
