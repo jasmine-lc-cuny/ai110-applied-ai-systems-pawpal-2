@@ -1,5 +1,6 @@
 from datetime import date
 
+from pawpal_ai import apply_suggested_tasks, generate_care_plan
 from pawpal_system import Owner, Pet, Scheduler, Task
 
 
@@ -41,7 +42,7 @@ def main():
     print(f"PawPal+ schedule for {owner.name}")
     print("=" * 32)
 
-    print_schedule("📅 Today's Schedule", scheduler.todays_schedule())
+    print_schedule("Today's Schedule", scheduler.todays_schedule())
     print()
 
     print_schedule(
@@ -61,11 +62,11 @@ def main():
     print()
 
     top_priority_tasks = scheduler.get_top_priority_tasks(limit=3)
-    print_schedule("⭐ Today's Top 3 Priorities", top_priority_tasks)
+    print_schedule("Today's Top 3 Priorities", top_priority_tasks)
     print()
 
     conflicts = scheduler.detect_conflicts(scheduler.todays_schedule())
-    print("⚠️ Conflict Warnings")
+    print("Conflict Warnings")
     if conflicts:
         for warning in conflicts:
             print(f"  {warning}")
@@ -79,7 +80,26 @@ def main():
         for pet, task in owner.all_tasks()
         if pet.name == "Mochi" and task.title == "Morning walk" and task.due_date > date.today()
     ]
-    print_schedule("🔁 Recurring Task Created", next_walks)
+    print_schedule("Recurring Task Created", next_walks)
+
+    print()
+    print("PawPal AI Care Plan")
+    print("=" * 19)
+    plan = generate_care_plan(
+        owner,
+        "Mochi",
+        "Mochi needs a daily dog walk and heartworm medication reminder.",
+    )
+    for step in plan.reasoning_steps:
+        print(f"  Step: {step}")
+    for task in plan.suggested_tasks:
+        print(f"  Suggested: {task.summary('Mochi')}")
+    print(f"  Brief: {plan.specialized_brief}")
+    print(f"  Confidence: {plan.confidence:.2f}")
+    if plan.guardrails:
+        print(f"  Guardrail: {plan.guardrails[0]}")
+    added = apply_suggested_tasks(owner, "Mochi", plan)
+    print(f"  Applied suggested tasks: {added}")
 
 
 if __name__ == "__main__":

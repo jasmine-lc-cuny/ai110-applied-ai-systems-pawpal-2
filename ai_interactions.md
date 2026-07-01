@@ -1,32 +1,34 @@
 # AI Interactions Log
 
-## Agent Workflow
+## Agentic Workflow
 
-**What task did you give the agent?**
+I used Codex to help convert the corrected Module 2 PawPal+ project into an applied AI system. The workflow was:
 
-I asked Codex to help me complete the PawPal+ project from the CodePath instructions. The work was split into phases: create a UML design and class skeleton, implement the OOP backend, connect the backend to Streamlit, add scheduling algorithms, write pytest tests, and finish the README/reflection. I wanted the agent to keep the commits meaningful so the project history showed design, implementation, testing, and documentation progress.
+1. Clone the corrected Module 2 project from GitHub.
+2. Inspect the existing `Owner`, `Pet`, `Task`, and `Scheduler` classes.
+3. Add a custom pet-care retrieval corpus.
+4. Build an AI care planner that retrieves guidance, suggests tasks, simulates schedule impact, checks conflicts, applies guardrails, and logs reasoning.
+5. Integrate the planner into the CLI and Streamlit app.
+6. Add tests and a reliability evaluation script.
+7. Fix a planning mutation risk so generated plans do not alter the real schedule before confirmation.
+8. Replace emoji-heavy CLI labels with ASCII-safe output for reproducible grading.
 
-**What did the agent do?**
+## Helpful AI Suggestion
 
-Codex created `pawpal_system.py` with the `Owner`, `Pet`, `Task`, and `Scheduler` classes, updated `diagrams/uml.mmd`, and added `diagrams/uml_final.mmd`. It implemented sorting by time, priority sorting, filtering, recurrence, conflict detection, and task completion. It also created `main.py` for CLI verification, rewrote `app.py` so Streamlit uses `st.session_state`, added `tests/test_pawpal.py`, ran `python main.py`, ran `python -m pytest`, and updated `README.md` and `reflection.md`.
+The most helpful suggestion was to keep PawPal's original scheduler as the stable core and add AI planning around it. That made the final project clearly connected to Module 2 while adding retrieval, guardrails, and reliability testing.
 
-**What did you have to verify or fix manually?**
+## Flawed AI Suggestion
 
-I reviewed the design choices and kept the conflict detection intentionally simple so it only warns on exact date/time matches. I also checked that the README output matched the actual terminal output and that the final UML matched the implemented methods. One thing I watched for was overly complex scheduling logic; I wanted the solution to be understandable for a first OOP scheduler project, not a full calendar system.
+The first simulation design reused the original pet object. That could have accidentally added AI suggestions during planning. The corrected version copies the pet's current task list and only mutates the real schedule when `apply_suggested_tasks()` is called.
 
----
+## Intermediate Reasoning Trace Example
 
-## Prompt Comparison
-
-| | Option A | Option B |
-|-|----------|----------|
-| **Model / tool used** | Codex for implementation planning | Codex for testing review |
-| **Prompt** | "Build PawPal+ from the assignment phases and keep the backend separate from the UI." | "What should be tested for a pet scheduler with sorting, recurring tasks, and conflicts?" |
-| **Response summary** | Suggested creating `Owner`, `Pet`, `Task`, and `Scheduler`, then wiring Streamlit to those classes through session state. | Suggested tests for completion, adding tasks, sorting, recurrence, filtering, and conflict detection. |
-| **What was useful** | The phased approach kept the project from becoming one giant edit. | The test plan mapped directly to the assignment requirements. |
-| **Problems noticed** | A more advanced conflict algorithm would have been possible but too large for the required scope. | Some edge cases, like overlapping durations, were noted but not implemented. |
-| **Decision** | Keep a clean OOP design with simple exact-time conflict warnings. | Test the required behavior now and document future edge cases in the reflection. |
-
-**Which approach did you use in your final implementation and why?**
-
-I used the phased implementation approach because it matched the CodePath instructions and made each commit easier to understand. I also used the testing review to decide which behaviors were most important to verify before submitting. I rejected extra complexity when it would make the project harder to explain, especially around calendar-style overlap detection.
+```text
+Request: Mochi needs a daily dog walk and heartworm medication reminder.
+Step 1: Retrieve dog medication guidance.
+Step 2: Retrieve dog exercise guidance.
+Step 3: Convert retrieved guides into suggested Task objects.
+Step 4: Simulate schedule impact and detect exact-time conflicts.
+Step 5: Return guardrails and confidence score.
+Step 6: Apply suggested tasks only after explicit confirmation.
+```

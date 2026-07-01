@@ -1,0 +1,4 @@
+style,prefix,focus,template
+care_coach,"Care coach:","daily pet care","{prefix} For {pet}, prioritize {task} because {reason}."
+safety_coach,"Safety note:","safe scheduling","{prefix} For {pet}, review {task} because {reason}."
+busy_owner,"Busy-owner brief:","a manageable routine","{prefix} Add {task} for {pet} to keep {focus} realistic."

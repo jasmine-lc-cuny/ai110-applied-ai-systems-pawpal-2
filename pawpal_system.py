@@ -46,7 +46,7 @@ class Task:
     def summary(self, pet_name: str | None = None) -> str:
         """Return a readable one-line description for CLI output."""
         pet_prefix = f"{pet_name}: " if pet_name else ""
-        status = "✅ done" if self.completed else "⏳ open"
+        status = "done" if self.completed else "open"
         return (
             f"{self.time} - {pet_prefix}{self.title} "
             f"({self.duration_minutes} min, {self.priority}, "

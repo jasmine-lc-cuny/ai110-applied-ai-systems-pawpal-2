@@ -1,5 +1,11 @@
 from datetime import date, timedelta
 
+from main import build_demo_owner
+from pawpal_ai import (
+    apply_suggested_tasks,
+    generate_care_plan,
+    retrieve_guides,
+)
 from pawpal_system import Owner, Pet, Scheduler, Task
 
 
@@ -128,3 +134,59 @@ def test_scheduler_returns_top_three_priority_tasks():
         "Another high task",
         "Medium task",
     ]
+
+
+def test_ai_retriever_is_species_aware():
+    dog_results = retrieve_guides("daily dog walk exercise", "dog", k=1)
+    cat_results = retrieve_guides("cat brushing coat grooming", "cat", k=1)
+
+    assert dog_results[0][0].topic == "exercise"
+    assert cat_results[0][0].topic == "grooming"
+
+
+def test_ai_care_plan_suggests_tasks_without_mutating_owner():
+    owner = build_demo_owner()
+    original_count = len(owner.find_pet("Mochi").tasks)
+
+    plan = generate_care_plan(
+        owner,
+        "Mochi",
+        "Mochi needs a daily dog walk and medication reminder.",
+        log_path=None,
+    )
+
+    assert len(owner.find_pet("Mochi").tasks) == original_count
+    assert any(task.title == "AI suggested walk" for task in plan.suggested_tasks)
+    assert plan.confidence > 0
+    assert plan.reasoning_steps
+
+
+def test_ai_plan_can_be_applied_to_owner_schedule():
+    owner = build_demo_owner()
+    original_count = len(owner.find_pet("Luna").tasks)
+    plan = generate_care_plan(
+        owner,
+        "Luna",
+        "Luna needs cat brushing and coat grooming reminders.",
+        log_path=None,
+    )
+
+    added = apply_suggested_tasks(owner, "Luna", plan)
+
+    assert added == len(plan.suggested_tasks)
+    assert len(owner.find_pet("Luna").tasks) == original_count + added
+    assert any(task.title == "AI grooming session" for task in owner.find_pet("Luna").tasks)
+
+
+def test_ai_plan_includes_medication_guardrail():
+    owner = build_demo_owner()
+
+    plan = generate_care_plan(
+        owner,
+        "Mochi",
+        "Help me remember dog heartworm medication.",
+        log_path=None,
+    )
+
+    assert plan.retrieved_guides[0][0].topic == "medication"
+    assert any("Do not invent medication names" in guardrail for guardrail in plan.guardrails)

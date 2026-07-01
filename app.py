@@ -2,6 +2,7 @@ from pathlib import Path
 
 import streamlit as st
 
+from pawpal_ai import apply_suggested_tasks, generate_care_plan
 from pawpal_system import Owner, Pet, Scheduler, Task
 
 
@@ -152,6 +153,32 @@ else:
     st.success("No open task conflicts.")
 
 if owner.pets:
+    st.subheader("PawPal AI Care Planner")
+    with st.form("ai_care_plan_form"):
+        ai_pet = st.selectbox("Pet for AI plan", [pet.name for pet in owner.pets])
+        ai_request = st.text_area(
+            "Care goal",
+            "Help me create a safer daily routine with reminders.",
+        )
+        ai_audience = st.selectbox("Brief style", ["care", "busy owner"])
+        submitted_ai = st.form_submit_button("Generate AI care plan")
+
+    if submitted_ai and ai_request.strip():
+        plan = generate_care_plan(owner, ai_pet, ai_request.strip(), audience=ai_audience)
+        st.write(plan.specialized_brief)
+        st.metric("Confidence", f"{plan.confidence:.2f}")
+        if plan.suggested_tasks:
+            st.table(task_rows([(owner.find_pet(ai_pet), task) for task in plan.suggested_tasks]))
+        for step in plan.reasoning_steps:
+            st.caption(step)
+        for guardrail in plan.guardrails:
+            st.warning(guardrail)
+        if st.button("Apply AI suggested tasks"):
+            apply_suggested_tasks(owner, ai_pet, plan)
+            persist_owner()
+            st.success("AI suggested tasks added.")
+            st.rerun()
+
     st.subheader("Complete a Task")
     open_tasks = scheduler.sort_by_time(scheduler.filter_tasks(completed=False))
     task_options = [f"{pet.name} | {task.title}" for pet, task in open_tasks]

@@ -1,135 +1,159 @@
-# PawPal+ (Module 2 Project)
+# PawPal AI: Applied Pet Care Planning System
 
-PawPal+ is a CLI-first pet care management app that helps owners organize daily routines for their pets. It combines object-oriented Python classes with a simple Streamlit interface so users can add pets, schedule tasks, review important reminders, and receive smart scheduling feedback.
+## Original Project
 
-## What PawPal+ Does
+This final project extends my **Module 2 PawPal+ project**. The original project was an object-oriented pet care scheduler that let an owner add pets, create care tasks, sort tasks by time or priority, detect same-time conflicts, mark recurring tasks complete, persist data to JSON, and use a Streamlit interface.
 
-- Add and manage pets for an owner
-- Schedule care tasks such as walks, meals, medications, and grooming
-- Sort tasks by time or priority
-- Filter tasks by pet and completion status
-- Detect task conflicts for the same date and time
-- Automatically create the next recurring task for daily or weekly routines
-- Persist data between app runs using JSON storage
+PawPal AI keeps that Module 2 foundation and adds an applied AI planning layer. The new system retrieves pet-care guidance, proposes schedule tasks, checks conflicts, applies guardrails, logs reasoning traces, and evaluates reliability.
 
-## Features
+## Summary
 
-- Track task time, duration, priority, frequency, due date, and completion status
-- View schedules sorted by chronological order or urgency
-- Highlight the next urgent task and the top three priorities for the day
-- Use a Streamlit interface backed by session state for a smoother browser experience
-- Save and reload pet and task data through JSON persistence
+PawPal AI helps a pet owner turn a care goal into a safer daily routine. For example, if the owner says a dog needs a walk and medication reminder, the system retrieves exercise and medication guidance, suggests concrete tasks, flags overlaps, and explains the plan.
+
+This is not veterinary advice. It is a scheduling assistant for owner-provided care routines.
+
+## Architecture
+
+The Mermaid source file is stored at `diagrams/architecture.mmd`.
+
+```mermaid
+flowchart TD
+    A[Owner, pets, existing PawPal tasks] --> B[Scheduler]
+    C[Owner care request] --> D[Care guide retriever]
+    D --> E[Retrieved pet-care guidance]
+    E --> F[AI care planner]
+    B --> F
+    F --> G[Suggested tasks]
+    F --> H[Reasoning steps and guardrails]
+    F --> I[Conflict check and confidence score]
+    G --> J[Apply suggestions to PawPal schedule]
+    H --> K[JSONL planning logs]
+    I --> L[Evaluation harness]
+    L --> M[Pass/fail reliability summary]
+```
+
+## AI Features
+
+- **Retrieval-Augmented Generation:** `pawpal_ai.py` retrieves care guidance from `data/care_guides.csv`.
+- **Agentic Workflow:** the planner follows multiple steps: retrieve guidance, create task suggestions, simulate schedule impact, detect conflicts, generate reasoning steps, apply guardrails, score confidence, and log the run.
+- **Specialization:** `data/style_examples.csv` provides small few-shot style templates for care-coach, safety, and busy-owner explanations.
+- **Reliability Harness:** `evaluate_ai.py` runs predefined cases and prints pass/fail results.
 
 ## Setup
 
-Install the required dependencies:
-
 ```bash
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Run the CLI demo:
+## Run The CLI Demo
 
 ```bash
 python main.py
 ```
 
-Run the Streamlit app:
+Sample output:
+
+```text
+PawPal+ schedule for Jordan
+================================
+Today's Schedule
+  07:30 - Luna: Breakfast (10 min, high, daily, 2026-07-01, open)
+  08:00 - Mochi: Morning walk (30 min, high, daily, 2026-07-01, open)
+  08:00 - Luna: Brush coat (15 min, medium, once, 2026-07-01, open)
+  12:00 - Mochi: Heartworm medication (5 min, high, once, 2026-07-01, open)
+
+PawPal AI Care Plan
+===================
+  Step: Matched request to medication guidance for dog care.
+  Step: Matched request to exercise guidance for dog care.
+  Step: Detected schedule overlap after adding suggested tasks.
+  Suggested: 12:00 - Mochi: AI medication check (5 min, high, daily, 2026-07-01, open)
+  Suggested: 08:00 - Mochi: AI suggested walk (30 min, high, daily, 2026-07-01, open)
+  Brief: Care coach: For Mochi, prioritize AI medication check because Medication tasks should be high priority and easy to notice in the daily schedule.
+  Confidence: 0.95
+  Guardrail: Do not invent medication names or dosages; only remind for owner-provided care tasks.
+  Applied suggested tasks: 2
+```
+
+## Run The Streamlit App
 
 ```bash
 python -m streamlit run app.py
 ```
 
-## Sample Output
+The app includes the original PawPal+ task manager and a PawPal AI Care Planner section.
 
-Example output from running `python main.py`:
+## Tests And Evaluation
 
-```text
-PawPal+ schedule for Jordan
-================================
-📅 Today's Schedule
-  07:30 - Luna: Breakfast (10 min, high, daily, 2026-07-01, ⏳ open)
-  08:00 - Mochi: Morning walk (30 min, high, daily, 2026-07-01, ⏳ open)
-  08:00 - Luna: Brush coat (15 min, medium, once, 2026-07-01, ⏳ open)
-  12:00 - Mochi: Heartworm medication (5 min, high, once, 2026-07-01, ⏳ open)
-
-High Priority First
-  07:30 - Luna: Breakfast (10 min, high, daily, 2026-07-01, ⏳ open)
-  08:00 - Mochi: Morning walk (30 min, high, daily, 2026-07-01, ⏳ open)
-  12:00 - Mochi: Heartworm medication (5 min, high, once, 2026-07-01, ⏳ open)
-  08:00 - Luna: Brush coat (15 min, medium, once, 2026-07-01, ⏳ open)
-
-🚨 Next Urgent Task
-  07:30 - Luna: Breakfast (10 min, high, daily, 2026-07-01, ⏳ open)
-
-⭐ Today's Top 3 Priorities
-  07:30 - Luna: Breakfast (10 min, high, daily, 2026-07-01, ⏳ open)
-  08:00 - Mochi: Morning walk (30 min, high, daily, 2026-07-01, ⏳ open)
-  12:00 - Mochi: Heartworm medication (5 min, high, once, 2026-07-01, ⏳ open)
-
-⚠️ Conflict Warnings
-  Conflict on 2026-07-01 at 08:00: Mochi: Morning walk, Luna: Brush coat
-
-🔁 Recurring Task Created
-  08:00 - Mochi: Morning walk (30 min, high, daily, 2026-07-02, ⏳ open)
-```
-
-## Persistence and Bonus Features
-
-- The app saves owner, pet, and task data to `data.json` whenever the Streamlit app updates the schedule.
-- The backend supports `Owner.save_to_json()` and `Owner.load_from_json()` for round-trip persistence.
-- The CLI and UI both show a “Today’s Top 3 Priorities” view powered by `Scheduler.get_top_priority_tasks()`.
-- The interface also uses lightweight emoji-based formatting to make the schedule easier to scan.
-
-## Smarter Scheduling
-
-| Feature | Method(s) | Notes |
-|---------|-----------|-------|
-| Task sorting | `Scheduler.sort_by_time()` | Sorts tasks chronologically using `HH:MM` strings. |
-| Priority sorting | `Scheduler.sort_by_priority_then_time()` | Sorts high priority first, then by time. |
-| Filtering | `Scheduler.filter_tasks()` | Filters by pet name and/or completion status. |
-| Conflict handling | `Scheduler.detect_conflicts()` | Returns warning strings for exact same date/time matches. |
-| Recurring tasks | `Task.next_occurrence()`, `Scheduler.mark_task_complete()` | Creates the next daily or weekly task after completion. |
-| Urgent task selection | `Scheduler.get_next_urgent_task()` | Picks the most urgent open task for the day. |
-| Top-priority summary | `Scheduler.get_top_priority_tasks()` | Returns the highest-priority tasks up to a requested limit. |
-
-## Testing PawPal+
-
-Run the full test suite:
+Run unit tests:
 
 ```bash
 python -m pytest
 ```
 
-The test suite covers task completion, task addition, chronological sorting, filtering, daily recurrence, conflict detection, persistence, and priority-based scheduling.
+Output:
 
 ```text
-============================= test session starts =============================
-platform linux -- Python 3.11.11, pytest-8.3.0
-rootdir: /workspaces/ai110-module2show-pawpal-starter
-collected 9 items
-
-tests/test_pawpal.py .................                                  [100%]
-
-============================== 9 passed in 0.02s ==============================
+collected 13 items
+tests\test_pawpal.py .............                                       [100%]
+============================= 13 passed in 0.02s ==============================
 ```
 
-Confidence Level: 4.5/5 stars. The core behaviors are fully verified, and the bonus features are covered by automated tests as well.
+Run the reliability harness:
 
-## Demo Walkthrough
+```bash
+python evaluate_ai.py
+```
 
-1. The user enters their owner name in the sidebar.
-2. The user adds pets such as Mochi the dog and Luna the cat.
-3. The user schedules care tasks with a time, duration, priority, and frequency.
-4. PawPal+ displays the schedule as a table sorted by time or by urgency.
-5. The user filters tasks by pet or status and sees conflict warnings when two open tasks share the same date and time.
-6. When the user marks a daily or weekly task complete, PawPal+ creates the next occurrence automatically.
+Output:
 
-## Architecture
+```text
+PawPal AI Reliability Evaluation
+================================
+PASS: dog exercise request retrieves exercise guide
+  Pet: Mochi
+  Retrieved: exercise, medication
+  Suggested tasks: AI suggested walk, AI medication check
+  Confidence: 0.95
+PASS: cat grooming request creates grooming task
+  Pet: Luna
+  Retrieved: grooming, feeding
+  Suggested tasks: AI grooming session, AI feeding reminder
+  Confidence: 0.95
+PASS: medication request includes safety guardrail
+  Pet: Mochi
+  Retrieved: medication, exercise
+  Suggested tasks: AI medication check, AI suggested walk
+  Confidence: 0.95
 
-- Draft UML: `diagrams/uml.mmd`
-- Final UML: `diagrams/uml_final.mmd`
-- Backend logic: `pawpal_system.py`
-- CLI verification: `main.py`
-- Streamlit UI: `app.py`
-- Tests: `tests/test_pawpal.py`
+Summary: 3 out of 3 checks passed.
+```
+
+## Optional Stretch Features
+
+| Stretch Feature | Evidence |
+|---|---|
+| RAG Enhancement | Custom pet-care guidance corpus in `data/care_guides.csv`; retrieved guidance changes suggested tasks and guardrails. |
+| Agentic Workflow Enhancement | Multi-step planning and reasoning traces in `pawpal_ai.py`; JSONL logs in `logs/`. |
+| Fine-Tuning or Specialization | Few-shot style templates in `data/style_examples.csv`; outputs can use care-coach, safety, or busy-owner styles. |
+| Test Harness or Evaluation Script | `evaluate_ai.py` runs predefined cases and prints pass/fail results, confidence, retrieved topics, and suggested tasks. |
+
+## Design Decisions
+
+I kept the original Module 2 object-oriented classes because they already modeled the scheduling domain well. The AI layer sits on top of the scheduler instead of replacing it, which keeps the system explainable and testable.
+
+The planner simulates suggested tasks before applying them, so it can detect conflicts without silently changing the real schedule. Suggested tasks are only added when `apply_suggested_tasks()` is called.
+
+## Limitations
+
+- The care guide corpus is small and manually written.
+- The system does not know a pet's medical history.
+- It should not invent medication names, dosages, or treatment advice.
+- Conflict detection only catches exact same-date and same-time overlaps.
+- A real pet care app would need owner confirmation, reminders, and veterinarian-approved guidance.
+
+## Reflection
+
+This project taught me that an applied AI system can be useful without being a black-box model. Retrieval, planning, guardrails, logs, and tests can make a simple scheduler feel smarter while still keeping the behavior understandable.
