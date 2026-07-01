@@ -15,6 +15,8 @@ pawpal_website_demo.html
 assets/pawpal-ai-infographic.png
 ```
 
+![PawPal AI cartoon infographic](assets/pawpal-ai-infographic.png)
+
 ## Summary
 
 PawPal AI helps a pet owner turn a care goal into a safer daily routine. For example, if the owner says a dog needs a walk and medication reminder, the system retrieves exercise and medication guidance, suggests concrete tasks, flags overlaps, and explains the plan.
