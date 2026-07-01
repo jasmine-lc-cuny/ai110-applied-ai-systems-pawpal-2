@@ -6,6 +6,15 @@ This final project extends my **Module 2 PawPal+ project**. The original project
 
 PawPal AI keeps that Module 2 foundation and adds an applied AI planning layer. The new system retrieves pet-care guidance, proposes schedule tasks, checks conflicts, applies guardrails, logs reasoning traces, and evaluates reliability.
 
+## Visual Demo
+
+Open `demo.html` in a browser for a polished project overview with a cartoon PawPal AI infographic and sample schedule.
+
+```text
+demo.html
+assets/pawpal-ai-infographic.png
+```
+
 ## Summary
 
 PawPal AI helps a pet owner turn a care goal into a safer daily routine. For example, if the owner says a dog needs a walk and medication reminder, the system retrieves exercise and medication guidance, suggests concrete tasks, flags overlaps, and explains the plan.
